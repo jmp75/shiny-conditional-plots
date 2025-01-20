@@ -8,7 +8,7 @@ app_ui = ui.page_fluid(
         choices=["123456", "999999"],
         inline=True,
     ),
-    ui.output_text_verbatim("txt"),
+    ui.output_ui("toggled_controls"),
 )
 
 
@@ -22,11 +22,25 @@ def server(input, output, session):
         selected_station = input.station_id_rb()
         _current_location_rv.set(selected_station)
 
-    @render.text
-    def txt():
+    @render.ui
+    def toggled_controls():
         location = _current_location_rv.get()
-        msg = f"Currently selected: {location}" if location else "<not selected>"
-        return msg
+        if location is None:
+            return ui.TagList(
+                ui.output_text("location_known", "Location is None - no UI")
+            )
+        elif location == "123456":
+            return ui.TagList(
+                ui.output_text("location_123456", "hard coded control for 123456")
+            )
+        elif location == "999999":
+            return ui.TagList(
+                ui.output_text("location_999999", "hard coded control for 999999")
+            )
+        else:
+            return ui.TagList(
+                ui.output_text("whats_that", "Unexpected station ID")
+            )
 
 
 app = App(app_ui, server)
