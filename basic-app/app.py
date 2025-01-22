@@ -27,8 +27,9 @@ def server(input, output, session):
     def toggled_controls():
         location = str(_current_location_rv.get())
         condipanel = ui.panel_conditional(
-            f"{location} === '123456'",ui.output_text("location_123456", "hard coded control for 123456"),
-
+            f"{location} === 123456",
+            ui.input_select("select", None, ["A", "B", "C"]),
+            # ui.output_text("location_123456", "hard coded control for 123456"),
         )
         return condipanel
         if location is None:
