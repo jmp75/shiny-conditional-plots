@@ -22,32 +22,34 @@ def server(input, output, session):
         selected_station = input.station_id_rb()
         _current_location_rv.set(selected_station)
 
-    @output
     @render.ui
     def toggled_controls():
         location = str(_current_location_rv.get())
-        condipanel = ui.panel_conditional(
-            f"{location} === 123456",
-            ui.input_select("select", None, ["A", "B", "C"]),
-            # ui.output_text("location_123456", "hard coded control for 123456"),
-        )
-        return condipanel
         if location is None:
             return ui.TagList(
-                ui.output_text("location_known", "Location is None - no UI")
+                ui.output_text("location_unknown")
             )
         elif location == "123456":
             return ui.TagList(
-                ui.output_text("location_123456", "hard coded control for 123456")
+                ui.output_text("location_123456")
             )
         elif location == "999999":
             return ui.TagList(
-                ui.output_text("location_999999", "hard coded control for 999999")
+                ui.output_text("location_999999")
             )
         else:
             return ui.TagList(
-                ui.output_text("whats_that", "Unexpected station ID")
+                ui.output_text("whats_that")
             )
+    @render.text
+    def location_unknown(): return "location_unknown"
+    @render.text
+    def location_123456(): return "location is 123456"
+    @render.text
+    def location_999999(): return "location is 999999"
+    @render.text
+    def whats_that(): return "Unexpected location!"
+
 
 
 app = App(app_ui, server)
