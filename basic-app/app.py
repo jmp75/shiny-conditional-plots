@@ -22,9 +22,15 @@ def server(input, output, session):
         selected_station = input.station_id_rb()
         _current_location_rv.set(selected_station)
 
+    @output
     @render.ui
     def toggled_controls():
-        location = _current_location_rv.get()
+        location = str(_current_location_rv.get())
+        condipanel = ui.panel_conditional(
+            f"{location} === '123456'",ui.output_text("location_123456", "hard coded control for 123456"),
+
+        )
+        return condipanel
         if location is None:
             return ui.TagList(
                 ui.output_text("location_known", "Location is None - no UI")
