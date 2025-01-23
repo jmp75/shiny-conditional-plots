@@ -1,4 +1,6 @@
+import plotly.express as px
 from shiny import App, reactive, render, ui
+from shinywidgets import output_widget, render_widget
 
 app_ui = ui.page_fluid(
     ui.panel_title("Hello Shiny!"),
@@ -24,23 +26,31 @@ def server(input, output, session):
 
     @render.ui
     def toggled_controls():
-        location = str(_current_location_rv.get())
+        location = _current_location_rv.get()
         if location is None:
             return ui.TagList(
                 ui.output_text("location_unknown")
             )
-        elif location == "123456":
-            return ui.TagList(
-                ui.output_text("location_123456")
-            )
-        elif location == "999999":
-            return ui.TagList(
-                ui.output_text("location_999999")
-            )
         else:
             return ui.TagList(
-                ui.output_text("whats_that")
+                output_widget("first_graph"),
+                output_widget("second_graph")
             )
+
+    @render_widget
+    def first_graph():
+        # Note: if one adds the following statement to the function body, then you get duplicated graph outputs
+        # location = _current_location_rv.get()
+        df = px.data.stocks()
+        fig = px.line(df, x='date', y="GOOG")
+        return fig
+
+    @render_widget
+    def second_graph():
+        df = px.data.stocks()
+        fig = px.line(df, x='date', y="AAPL")
+        return fig
+
     @render.text
     def location_unknown(): return "location_unknown"
     @render.text
